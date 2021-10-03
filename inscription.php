@@ -3,11 +3,11 @@
     if (isset($_POST['envoyer'])){
 	 $pseudo=$_POST['pseudo'];
 	 $email=$_POST['email'];
-	 $password=$_POST['password'];
+	 $pass=$_POST['pass'];
 	 
 	 
-$req=$connexion->prepare("SELECT * FROM utilisateurs WHERE pseudo=:pseudo and email=:email and password=:password");
-$req->execute(array("pseudo"=>$pseudo, "nom"=>$email, "password"=>$password));
+$req=$database->prepare("SELECT pseudo,email,pass FROM utilisateurs WHERE pseudo=:pseudo and email=:email and pass=:pass");
+$req->execute(array("pseudo"=>$pseudo, "email"=>$email, "pass"=>$pass));
 $resultat = $req->fetch();
 if ($resultat)
 {
@@ -15,12 +15,12 @@ echo "Vous avez deja un compte !";
 }
 else
 {
-$requete="INSERT INTO utilisateurs(pseudo,email,password) VALUES(?,?,?)";
-$prepare=$connexion->prepare($requete);
-$reponse=$prepare->execute(array($pseudo,$email,$password));
+$requete="INSERT INTO utilisateurs(pseudo,email,pass) VALUES(?,?,?)";
+$prepare=$database->prepare($requete);
+$reponse=$prepare->execute(array($pseudo,$email,$pass));
 if($reponse==1){
 	echo "SUccess!";
-
+    header('location:administration.php');
 	}
 }
 }
@@ -39,15 +39,15 @@ if($reponse==1){
     <div class="FormInscrs">
         <div class="form-text">Inscription</div>
         <div class="form-saisie">
-            <form method="" action="">
+            <form method="post" action="">
                 <span>Nom & Prenom :</span>
-                <input type="text" required name="name" placeholder="Votre Nom et Prenom(s)">
+                <input type="text" required name="pseudo" placeholder="Votre Nom et Prenom(s)">
 
                 <span>Adress Email :</span>
                 <input type="email" required name="email" placeholder=" Votre Adresse Email">
 
                 <span>Mot de pass :</span>
-                <input type="password" required name="password" placeholder="Votre mot de pass">
+                <input type="password" required name="pass" placeholder="Votre mot de pass">
                 <input type="submit" name="envoyer" value="S'inscrire" class="btnInscris">
                 Etes-vous inscris ?&nbsp;<a href="index.php">Connectez-vous</a>
             </form>

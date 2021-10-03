@@ -1,12 +1,6 @@
 <?php 
 session_start();
 
-/*if(!isset($_SESSION ["idusers"]))
-{
-	header("location:index.php");
-	exit();
-}*/
-
 include("connexion.php"); 
 
 if(isset($_POST["connexion"]))
@@ -15,19 +9,19 @@ if(isset($_POST["connexion"]))
 $_SESSION=array();
 
 
-setcookie("login","");
+setcookie("email", "");
 
 setcookie("pass", "");
 
 $mot_pass=($_POST["pass"]);
 
-$nom_user=(strtolower($_POST["login"]));
+$email=(strtolower($_POST["email"]));
 
 
-$req=$connexion->prepare("SELECT * FROM users WHERE login=:login AND pass=:pass");
+$req= $database->prepare("SELECT * FROM utilisateurs WHERE email=:email AND pass=:pass");
 
 $req->execute(array(
- "login"=>$nom_user,
+ "email"=>$email,
  "pass"=>$mot_pass
 ));
 
@@ -35,28 +29,29 @@ $resultat = $req->fetch();
 
 if (!$resultat)
 {
-$msg=" Login et / ou Mot de passe incorrect !";
+$msg=" Email et / ou Mot de passe inorrecte !";
 }
 else
 {
     
-    $_SESSION['idusers'] = $resultat['idusers'];
-    $_SESSION['login'] = $nom_user;
+    $_SESSION['id'] = $resultat['id'];
+    $_SESSION['email'] = $email;
     
 	
 	
 }
 
-if (isset($_SESSION['idusers']) AND isset($_SESSION['login']))
+if (isset($_SESSION['id']) AND isset($_SESSION['email']))
 {
-header('location:accueil.php');
+header('location:administration.php');
 }
  
 }
  ?>
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +63,7 @@ header('location:accueil.php');
     <div class="FormConnexion">
         <div class="form-text">Connexion</div>
         <div class="form-saisie">
-            <form method="" action="index.php">
+            <form method="post" action="index.php">
 
                 <span>E-mail :</span>
                 <input type="email" required name="email" placeholder="Adresse Email">
